@@ -1,6 +1,6 @@
 package com.srp.order.providers;
 
-import com.srp.users.pojos.ExceptionMessage;
+import com.srp.order.pojos.ExceptionMessage;
 
 import javax.annotation.Priority;
 import javax.ws.rs.core.Response;

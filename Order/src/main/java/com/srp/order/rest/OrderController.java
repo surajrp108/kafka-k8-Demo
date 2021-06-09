@@ -2,11 +2,9 @@ package com.srp.order.rest;
 
 import com.srp.order.pojos.Order;
 import com.srp.order.service.OrderService;
+import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
-import javax.ws.rs.PATCH;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 
 @Path("/order")
 public class OrderController {
@@ -17,7 +15,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @POST
+    @GET
     @Path("/{id}")
     public Order getOrderDetails(@PathParam("id") Long id){
         return orderService.getOrderDetails(id);

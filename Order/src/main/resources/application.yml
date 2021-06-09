@@ -12,3 +12,19 @@ quarkus:
   hibernate-orm:
     database:
       generation: drop-and-create
+
+
+### Kafka configuration
+kafka:
+  bootstrap:
+    servers: localhost:9092
+
+
+####Channels configurations under kafka
+mp:
+  messaging:
+    outgoing:
+      notification:
+        connector: smallrye-kafka
+        value:
+          serializer: org.apache.kafka.common.serialization.StringSerializer

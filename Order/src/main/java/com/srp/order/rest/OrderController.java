@@ -4,6 +4,7 @@ import com.srp.order.pojos.Order;
 import com.srp.order.service.OrderService;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
+import javax.transaction.SystemException;
 import javax.ws.rs.*;
 
 @Path("/order")
@@ -22,7 +23,7 @@ public class OrderController {
     }
 
     @POST
-    public Long placeOrder(Order order){
+    public Long placeOrder(Order order) throws SystemException {
         return orderService.placeOrder(order);
     }
 

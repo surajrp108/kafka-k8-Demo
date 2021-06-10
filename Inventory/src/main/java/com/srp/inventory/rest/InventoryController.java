@@ -1,5 +1,6 @@
 package com.srp.inventory.rest;
 
+import com.srp.inventory.pojos.InventoryStock;
 import com.srp.inventory.pojos.OrderStock;
 import com.srp.inventory.pojos.Stock;
 import com.srp.inventory.service.InventoryService;
@@ -8,6 +9,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import java.util.List;
 
 @Path("/stock")
 public class InventoryController {
@@ -16,6 +18,11 @@ public class InventoryController {
 
     InventoryController(InventoryService inventoryService){
         this.inventoryService = inventoryService;
+    }
+
+    @GET
+    public List<InventoryStock> getAllStock(){
+        return inventoryService.getAllStockDetails();
     }
 
     @GET

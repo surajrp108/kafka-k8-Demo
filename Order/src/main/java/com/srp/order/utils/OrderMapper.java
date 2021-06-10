@@ -12,12 +12,14 @@ public class OrderMapper {
         entity.setCartId(source.getCartId());
         entity.setStatus(OrderStatus.Raised);
         entity.setVoucherId(source.getVoucherId());
+        entity.setUserId(source.getUserId());
         return entity;
     }
 
     public static Order getOrder(OrderEntity source) {
         Order order = new Order();
         order.setId(source.getId());
+        order.setCartId(source.getCartId());
         order.setAddressId(source.getDeliveryAddressId());
         order.setUserId(source.getUserId());
         order.setDiscounts(source.getDiscount());

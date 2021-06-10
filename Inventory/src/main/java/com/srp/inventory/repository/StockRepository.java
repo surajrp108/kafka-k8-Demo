@@ -1,20 +1,27 @@
 package com.srp.inventory.repository;
 
 import com.srp.inventory.entities.StockEntity;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
+import io.quarkus.hibernate.reactive.panache.PanacheRepository;
+import io.quarkus.panache.common.Page;
+import io.smallrye.mutiny.Uni;
 
+import javax.inject.Singleton;
 import java.util.List;
-import java.util.stream.Stream;
 
-public interface StockRepository extends CrudRepository<StockEntity, Long> {
+@Singleton
+public class StockRepository implements PanacheRepository<StockEntity> {
 
-    Stream<StockEntity> findByProductIdAndOrderIdIsNull(Long productId, Pageable page);
+    public Uni<List<StockEntity>> findByProductIdAndOrderIdIsNull(Long productId, int quantity) {
+        return find("productId=$1 and orderId is null")
+                .page(Page.of(0, quantity))
+                .list();
+    }
 
-    Stream<StockEntity> findByOrderIdIn(List<Long> orderIds);
+    public Uni<List<StockEntity>> findByOrderIdIn(List<Long> orderIds) {
+        return find("orderId in ($1)", orderIds).list();
+    }
 
-    @Query("select count(e.productId) from StockEntity e where e.productId=:id and status = 0")
-    Long countOfProductAvailable(@Param("id") Long productId);
+    public Uni<Long> countOfProductAvailable(Long productId) {
+        return count("productId= $1 and status=0", productId);
+    }
 }

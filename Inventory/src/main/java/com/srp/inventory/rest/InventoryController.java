@@ -4,6 +4,8 @@ import com.srp.inventory.pojos.InventoryStock;
 import com.srp.inventory.pojos.OrderStock;
 import com.srp.inventory.pojos.Stock;
 import com.srp.inventory.service.InventoryService;
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,26 +23,26 @@ public class InventoryController {
     }
 
     @GET
-    public List<InventoryStock> getAllStock(){
+    public Multi<InventoryStock> getAllStock(){
         return inventoryService.getAllStockDetails();
     }
 
     @GET
     @Path("/{productId}")
-    public boolean isStockOfProduct(@PathParam("productId")Long productId){
-        return this.inventoryService.getStockCount(productId) > 0;
+    public Uni<Long> isStockOfProduct(@PathParam("productId")Long productId){
+        return this.inventoryService.getStockCount(productId);
     }
 
     @POST
     @Path("/new")
-    public Long addNewStock(Stock stock){
-        return this.inventoryService.addStock(stock);
+    public void addNewStock(Stock stock){
+        this.inventoryService.addStock(stock);
     }
 
     @POST
     @Path("/prepareToOrder")
-    public Long prepareStockForOrder(OrderStock stock){
-        return this.inventoryService.addInOrderStock(stock);
+    public void prepareStockForOrder(OrderStock stock){
+        this.inventoryService.addInOrderStock(stock);
     }
 
 }

@@ -3,14 +3,16 @@ package com.srp.inventory.service;
 import com.srp.inventory.pojos.InventoryStock;
 import com.srp.inventory.pojos.OrderStock;
 import com.srp.inventory.pojos.Stock;
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 
 import java.util.List;
 
 public interface InventoryService {
-    Long getStockCount(Long productId);
-    Long addStock(Stock stock);
-    Long addInOrderStock(OrderStock stock);
-    List<InventoryStock> getAllStockDetails();
+    Uni<Long> getStockCount(Long productId);
+    void addStock(Stock stock);
+    void addInOrderStock(OrderStock stock);
+    Multi<InventoryStock> getAllStockDetails();
 
     void markDelivered(List<Long> orderId);
     void markOrderCancelled(List<Long> orderIds);

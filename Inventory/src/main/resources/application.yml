@@ -2,13 +2,13 @@ quarkus:
   http:
     port: 9083
   datasource:
-    db-kind: h2
-    username: sa
-    password: password
-    jdbc:
-      url: jdbc:h2:mem:stock_v1
-      max-size: 8
-      min-size: 2
+    db-kind: postgresql
+    username: postgres
+    password: postgres
+    reactive:
+      url: postgresql://localhost:5432/stock_v1
   hibernate-orm:
     database:
       generation: drop-and-create
+      log:
+        sql: true

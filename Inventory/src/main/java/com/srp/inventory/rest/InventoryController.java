@@ -35,8 +35,8 @@ public class InventoryController {
 
     @POST
     @Path("/new")
-    public void addNewStock(Stock stock){
-        this.inventoryService.addStock(stock);
+    public Uni<Void> addNewStock(Stock stock){
+        return this.inventoryService.addStock(stock);
     }
 
     @POST

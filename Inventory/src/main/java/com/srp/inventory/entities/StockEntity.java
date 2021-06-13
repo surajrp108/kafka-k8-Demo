@@ -2,25 +2,23 @@ package com.srp.inventory.entities;
 
 import com.srp.inventory.enums.StockStatus;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "stock")
 public class StockEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     Long id;
 
-    @Column
+    @Column(name = "supplier_id")
     Long supplierId;
 
-    @Column
+    @Column(name = "product_id")
     Long productId;
 
-    @Column
+    @Column(name = "order_id")
     Long orderId;
 
     @Column

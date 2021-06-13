@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -41,7 +42,8 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public void addStock(Stock stock) {
+    @Transactional
+    public Uni<Void> addStock(Stock stock) {
         Assert.isTrue(stock != null, "Invalid Stock");
         Assert.isTrue(stock.getProductId() != null, "Invalid Stock");
         Assert.isTrue(stock.getSupplierId() != null, "Invalid Stock");
@@ -52,11 +54,12 @@ public class InventoryServiceImpl implements InventoryService {
         List<StockEntity> stocks = IntStream.range(0, stock.getQuantity().intValue())
                 .mapToObj(x -> new StockEntity(stock.getSupplierId(), stock.getProductId()))
                 .collect(Collectors.toList());
-        stockRepository.persist(stocks);
-        log.debug("Stock added");
+         stockRepository.persist(stocks);
+         return stockRepository.flush();
     }
 
     @Override
+    @Transactional
     @Incoming("newOrderPlaced")
     public void addInOrderStock(OrderStock stock) {
         Assert.isTrue(stock != null, "Invalid Stock");
@@ -71,7 +74,7 @@ public class InventoryServiceImpl implements InventoryService {
                         x.setOrderId(stock.getOrderId());
                         x.setStatus(StockStatus.BookedForOrder);
                     });
-                    stockRepository.persist(entityStream);
+                    stockRepository.persist(entityStream).invoke(()-> stockRepository.flush());
                     log.info("Updating of Stock has been done");
                 });
 
@@ -97,12 +100,13 @@ public class InventoryServiceImpl implements InventoryService {
         });
     }
 
+    @Transactional
     private void markOrder(List<Long> orderIds, Consumer<StockEntity> action) {
         Assert.isTrue(orderIds != null && !orderIds.isEmpty(), "Invalid arguments");
         stockRepository.findByOrderIdIn(orderIds)
                 .invoke(res -> {
                     Stream<StockEntity> entityStream = res.stream().peek(action);
-                    stockRepository.persist(entityStream);
+                    stockRepository.persist(entityStream).invoke(()-> stockRepository.flush());
                 });
     }
 

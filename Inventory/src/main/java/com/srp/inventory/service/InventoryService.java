@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface InventoryService {
     Uni<Long> getStockCount(Long productId);
-    void addStock(Stock stock);
+    Uni<Void> addStock(Stock stock);
     void addInOrderStock(OrderStock stock);
     Multi<InventoryStock> getAllStockDetails();
 

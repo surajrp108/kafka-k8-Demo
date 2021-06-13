@@ -15,31 +15,43 @@ public class InventoryController {
 
     InventoryService inventoryService;
 
-    InventoryController(InventoryService inventoryService){
+    InventoryController(InventoryService inventoryService) {
         this.inventoryService = inventoryService;
     }
 
     @GET
-    public List<Stock> getAllStock(){
+    public List<Stock> getAllStock() {
         return this.inventoryService.getAllStock();
     }
 
     @GET
     @Path("/{productId}")
-    public boolean isStockOfProduct(@PathParam("productId")Long productId){
+    public boolean isStockOfProduct(@PathParam("productId") Long productId) {
         return this.inventoryService.getStockCount(productId) > 0;
     }
 
     @POST
     @Path("/new")
-    public Long addNewStock(Stock stock){
+    public Long addNewStock(Stock stock) {
         return this.inventoryService.addStock(stock);
     }
 
     @POST
     @Path("/prepareToOrder")
-    public Long prepareStockForOrder(OrderStock stock){
+    public Long prepareStockForOrder(OrderStock stock) {
         return this.inventoryService.addInOrderStock(stock);
+    }
+
+    @POST
+    @Path("/orderCancel")
+    public void cancelOrder(List<Long> orderIds) {
+        this.inventoryService.markOrderCancelled(orderIds);
+    }
+
+    @POST
+    @Path("/orderDeliver")
+    public void deliverOder(List<Long> orderIds) {
+        this.inventoryService.markDelivered(orderIds);
     }
 
 }

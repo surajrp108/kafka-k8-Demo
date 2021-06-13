@@ -13,6 +13,12 @@ quarkus:
     database:
       generation: drop-and-create
 
+com:
+  srp:
+    order:
+      restclient:
+        InventoryClient/mp-rest/url: http://localhost:9083/
+
 
 ### Kafka configuration
 kafka:

@@ -25,8 +25,16 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart getCart(Long userId) {
-        log.info("getCart: {}", userId);
+    public Cart getById(Long cartId){
+        log.info("getById: {}", cartId);
+        return cartRepository.findById(cartId)
+                .map(CartMapper::getCart)
+                .orElseThrow(() -> new IllegalArgumentException("Cart is empty kindly add product to get cart"));
+    }
+
+    @Override
+    public Cart getCartByUserId(Long userId) {
+        log.info("getCartByUserId: {}", userId);
         return cartRepository.findByUserIdAndActive(userId)
                 .map(CartMapper::getCart)
                 .orElseThrow(() -> new IllegalArgumentException("Cart is empty kindly add product to get cart"));

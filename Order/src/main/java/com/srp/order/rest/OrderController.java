@@ -2,7 +2,6 @@ package com.srp.order.rest;
 
 import com.srp.order.pojos.Order;
 import com.srp.order.service.OrderService;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
 import javax.ws.rs.*;
 

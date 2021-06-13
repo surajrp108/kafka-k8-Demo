@@ -18,8 +18,15 @@ public class CartController {
 
     @GET
     @Path("/{userId}")
-    public Cart getCart(@PathParam("userId") Long userId) {
-        return cartService.getCart(userId);
+    public Cart getCart(@PathParam("id") Long id) {
+        return cartService.getById(id);
+    }
+
+
+    @GET
+    @Path("/byUser/{userId}")
+    public Cart getCartByUserId(@PathParam("userId") Long userId) {
+        return cartService.getCartByUserId(userId);
     }
 
     @GET

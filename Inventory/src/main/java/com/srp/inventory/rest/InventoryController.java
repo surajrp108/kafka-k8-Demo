@@ -8,6 +8,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import java.util.List;
 
 @Path("/stock")
 public class InventoryController {
@@ -16,6 +17,11 @@ public class InventoryController {
 
     InventoryController(InventoryService inventoryService){
         this.inventoryService = inventoryService;
+    }
+
+    @GET
+    public List<Stock> getAllStock(){
+        return this.inventoryService.getAllStock();
     }
 
     @GET

@@ -1,11 +1,14 @@
 package com.srp.product.service.impl;
 
+import com.google.gson.Gson;
 import com.srp.product.entity.ProductEntity;
 import com.srp.product.enums.ProductCategory;
 import com.srp.product.exceptions.GeneralException;
 import com.srp.product.pojos.Product;
 import com.srp.product.repository.ProductRepository;
 import com.srp.product.service.ProductService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import javax.inject.Singleton;
@@ -21,6 +24,8 @@ import java.util.stream.StreamSupport;
 public class ProductServiceImpl implements ProductService {
 
     ProductRepository repository;
+    private final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
+    private final Gson gson = new Gson();
 
     public ProductServiceImpl(ProductRepository repository) {
         this.repository = repository;
@@ -28,6 +33,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Long save(Product product) {
+        log.info("save: {}", gson.toJson(product));
         ProductEntity entity = new ProductEntity(product.getId(), product.getName(), product.getDescription(), product.getCategory(), product.getPrice());
         ProductEntity save = repository.save(entity);
         return save.getId();
@@ -35,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product get(Long id) {
+        log.info("get: {}", id);
         Optional<ProductEntity> entityOptional = repository.findById(id);
         if (entityOptional.isPresent()) {
             ProductEntity entity = entityOptional.get();
@@ -45,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getAll() {
+        log.info("getAll: null");
         return StreamSupport.stream(repository.findAll().spliterator(), false)
                 .map(x -> new Product(x.getId(), x.getName(), x.getCategory(), x.getDescription(), x.getPrice()))
                 .collect(Collectors.toList());
@@ -53,6 +61,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean delete(Long id) {
         try{
+            log.info("delete: {}", id);
             repository.deleteById(id);
         }
         catch (Exception ex){
@@ -67,6 +76,7 @@ public class ProductServiceImpl implements ProductService {
         Assert.isTrue(product != null, "Product cannot be null");
         Assert.isTrue(product.getId() != null, "Product id cannot be null");
 
+        log.info("update: {}", gson.toJson(product));
         Optional<ProductEntity> entityOptional = repository.findById(product.getId());
         if (entityOptional.isPresent()) {
             ProductEntity entity = entityOptional.get();

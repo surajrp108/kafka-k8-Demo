@@ -1,5 +1,6 @@
 package com.srp.order.service.impl;
 
+import com.google.gson.Gson;
 import com.srp.order.entity.OrderEntity;
 import com.srp.order.enums.OrderStatus;
 import com.srp.order.exceptions.GeneralException;
@@ -12,6 +13,8 @@ import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
@@ -21,6 +24,8 @@ import javax.transaction.Transactional;
 @Singleton
 public class OrderServiceImpl implements OrderService {
 
+    private final Logger log = LoggerFactory.getLogger(CartServiceImpl.class);
+    private final Gson gson = new Gson();
 
     private final OrderRepository orderRepository;
 
@@ -40,21 +45,19 @@ public class OrderServiceImpl implements OrderService {
         Assert.isTrue(order.getCartId() != null, "Invalid Parameters");
         Assert.isTrue(order.getAddressId() != null, "Invalid Parameters");
 
+        log.info("placeOrder: {}", gson.toJson(order));
+
         OrderEntity entity = OrderMapper.getNewEntity(order);
         OrderEntity saved = this.orderRepository.save(entity);
         emitter.send(""+saved.getId());
         return saved.getId();
     }
 
-    @Outgoing("notification")
-    @Incoming("sendProductIdToOutgoing")
-    public Multi<String> notifyOthers(Long productId) {
-        return Multi.createFrom().item(""+productId);
-    }
-
     @Override
     public boolean deleteOrder(Long id) {
         Assert.isTrue(id != null, "Invalid Parameters");
+        log.info("deleteOrder: {}", id);
+
         OrderEntity orderEntity = orderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("No record found"));
         orderEntity.setStatus(OrderStatus.Cancelled);
         orderRepository.save(orderEntity);
@@ -64,6 +67,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOrderDetails(Long id) {
         Assert.isTrue(id != null, "Invalid Argument");
+        log.info("getOrderDetails: {}", id);
+
         OrderEntity entity = orderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Order not found"));
         return OrderMapper.getOrder(entity);
     }

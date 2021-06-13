@@ -6,6 +6,8 @@ import com.srp.users.repository.UserRegisterRepository;
 import com.srp.users.service.UserRegisterService;
 import com.srp.users.service.UserService;
 import net.bytebuddy.utility.RandomString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -14,6 +16,8 @@ import java.time.LocalDate;
 
 @Singleton
 public class UserRegisterServiceImpl implements UserRegisterService {
+
+    private final Logger log = LoggerFactory.getLogger(UserRegisterServiceImpl.class);
 
     private final UserRegisterRepository registerRepository;
     private final UserService userService;
@@ -26,7 +30,7 @@ public class UserRegisterServiceImpl implements UserRegisterService {
     @Override
     public String generateOtpIfEmailNotExist(String email) {
         Assert.isTrue(!StringUtils.isEmpty(email), "Email can not be Null");
-
+        log.info("generateOtpIfEmailNotExist: {}", email);
         try {
             RegisterEntity user = registerRepository.findByUserEmail(email)
                     .orElse(new RegisterEntity(email, null, null));
@@ -49,6 +53,7 @@ public class UserRegisterServiceImpl implements UserRegisterService {
 
         Assert.isTrue(!StringUtils.isEmpty(email), "Email can not be Null");
         Assert.isTrue(!StringUtils.isEmpty(otp), "OTP must be Provided");
+        log.info("validateOtp: email: {}", email);
 
         RegisterEntity registerEntity = registerRepository.findByUserEmail(email)
                 .orElseThrow(() -> new GeneralException("Invalid inputs email/otp."));
